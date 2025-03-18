@@ -61,22 +61,22 @@ public class Order  {
 
     @PostPersist
     public void onPostPersist(){
-    Inventory inventory = OrderApplication.applicationContext
-        .getBean(compensation.external.InventoryService.class)
-        .checkStock(get??);
+    // Inventory inventory = OrderApplication.applicationContext
+    //     .getBean(compensation.external.InventoryService.class)
+    //     .checkStock(Inventory.getId());
 
 
         OrderPlaced orderPlaced = new OrderPlaced(this);
         orderPlaced.publishAfterCommit();
-
-
-
-        OrderCancelled orderCancelled = new OrderCancelled(this);
-        orderCancelled.publishAfterCommit();
-
-    
     }
 
+    @PreRemove
+    public void onPreRemove(){
+        OrderCancelled orderCancelled = new OrderCancelled(this);
+        orderCancelled.publishAfterCommit();
+    }
+
+    
     public static OrderRepository repository(){
         OrderRepository orderRepository = OrderApplication.applicationContext.getBean(OrderRepository.class);
         return orderRepository;
@@ -96,17 +96,17 @@ public class Order  {
 
         */
 
-        /** Example 2:  finding and process
+        /** Example 2:  finding and process */
         
 
-        repository().findById(outOfStock.get???()).ifPresent(order->{
+        repository().findById(outOfStock.getOrderId()).ifPresent(order->{
             
-            order // do something
+            order.setStatus("OrderCancelled"); // do something
             repository().save(order);
 
 
          });
-        */
+        
 
         
     }
